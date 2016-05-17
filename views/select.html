@@ -1,0 +1,208 @@
+
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+	<body >
+		<div class="mui-col-sm-8 mui-col-sm-offset-2 ">
+			<div class="space-1"></div>
+			<div class="h3 bold">智慧選名</div>	
+			<div class="space-2"></div>
+			<div>公司名稱總筆畫為29劃，幾個字組成無限制。</div>
+			<div>開頭屬性部要選火跟木(因為木會生火)</div>
+			<div>不要打四個字，運算不來阿</div>
+			<div class="space-1"></div>
+			<div class="mui-col-sm-6 ">
+				<div class="mui-textfield mui-textfield--float-label">
+	 		    	<input  type="text" id="select-count1-input" required value="29">
+	 		    	<label>公司名稱筆畫</label>
+	 		    	<div class="message"></div>
+	 		 	</div>
+	 		 </div>
+			<div class="mui-col-sm-6">
+				<div class="mui-textfield mui-textfield--float-label" >
+	 		    	<input  type="text" id="select-count2-input" required value="2">
+	 		    	<label>公司名稱字數</label>
+	 		    	<div class="message"></div>
+	 		 	</div>
+			</div>
+		</div>
+		<div class="space-1"></div>
+		
+		<div class="mui-col-sm-10 mui-col-sm-offset-1 ">
+	 		<div class="numArrayContent"></div>
+	 		<div class="wordContent"></div>
+	 		<div class="nameContent"></div>
+	 	</div>
+		<div class="space-1"></div>
+		
+		<script type="text/javascript">
+			window['select'] = new SelectView();
+			 
+			function SelectView(){
+				var that = this;
+				var _id = 'select';
+				var _active = false;
+				var _$view = $('.view.'+_id);
+				var dictionary;
+				var _type = ['木','火','土','金','水'];
+				
+				var _numArray;
+				var _currType;
+				var _currWord;
+				
+				
+				/**
+				 * 初始化
+				 */
+				function _init(){
+					if(_$view.length==0){
+						return;
+					}
+					
+					_initComponent();
+					_initEvent();
+					//向StoreManage注册绑定资料异动，必须在最后处理，避免物件尚未生成
+					_createNumArrayItem();
+					
+				}
+
+				/**
+				 * 切换View绑定
+				 */
+				function _activeViewBind(store){
+					if(store.data.id==_id){
+						_active = true;
+						//滑动时 隐藏header
+						headerBar.scrollHide(false);
+					}else{
+						_active = false;
+					}
+				}
+				
+				function _initEvent(){
+					NumberInput(that.$count1);
+					NumberInput(that.$count2);
+					
+					that.$count1.keyup(function(){
+						delayAction('count1',500,function(){
+							_createNumArrayItem();
+						});
+					});
+					
+					that.$count2.keyup(function(){
+						delayAction('count2',500,function(){
+							_createNumArrayItem();
+						});
+					});
+				}
+				
+				
+				
+				function _initComponent(){
+					that.$count1 = _$view.find('#select-count1-input');
+					that.$count2 = _$view.find('#select-count2-input');
+					that.$numArrayContent = _$view.find('.numArrayContent');
+					that.$wordContent = _$view.find('.wordContent');
+					that.$nameContent = _$view.find('.nameContent');
+				}
+				
+				function _numArrayItemClick(){
+					that.$numArrayItems.removeClass('active');
+					$(this).addClass('active');
+					_numArray = JSON.parse($(this).html());
+					_createWordItem();
+				}
+
+				function _typeItemClick(){
+					that.$typeItems.removeClass('active');
+					$(this).addClass('active');
+					_currType = $(this).attr('data-type');
+					_currWord = $(this).html();
+					_createNameItem();
+				}
+				
+				function _nameItemClick(){
+					var $name = $(this);
+					if($name.hasClass('read'))return;
+					$name.addClass('read');
+					var name = $(this).attr('data-name');
+					var nameArr = name.split('');
+					var names = wordService.getWords(name.split(''));
+					
+					var html = new Array();
+					
+					for(var i in nameArr){
+						for(var j in names){
+							if(nameArr[i]==names[j].word){
+								html.push('<br>'+nameArr[i]+'，筆畫：'+names[j].num);
+								html.push('<br>'+nameArr[i]+'，發音：'+names[j].sound);
+								html.push('<br>譯釋：<br>'+names[j].content+'<br>');
+							}
+						}
+					}
+					$name.html($name.html()+html.join(''));
+					
+				}
+				
+				function _createNumArrayItem(){
+					that.$numArrayContent.empty();
+					that.$wordContent.empty();
+					that.$nameContent.empty();
+					if(that.$count1.val()&&that.$count2.val()){
+						var arr = fortuneService.getBestWordNum(parseInt(that.$count1.val()),parseInt(that.$count2.val()));
+						var item = new Array();
+						item.push('<div class="h3 bold">選擇名字筆劃組合</div><br>');
+						for(var i in arr){
+							item.push(String.format('<div class="num-array-item">{0}</div>',JSON.stringify(arr[i])));
+						}
+						that.$numArrayContent.append(item.join(''))
+						that.$numArrayItems = that.$numArrayContent.find('.num-array-item');
+						that.$numArrayItems.click(_numArrayItemClick);
+					}
+				}
+				
+				function _createWordItem(){
+					if(!_numArray)return;
+					that.$wordContent.empty();
+					that.$nameContent.empty();
+					var htmlArray = new Array();
+					htmlArray.push('<br>');
+					htmlArray.push('<div class="space-3"></div>');
+					htmlArray.push('<div class="h3 bold">選擇名稱開頭</div><br>');
+					var strs = WordsByNumObject[_numArray[0]];
+					var item = new Array();
+					for(var i in strs){
+						htmlArray.push(i+'：<br>');
+						for(var j in strs[i]){
+							htmlArray.push(String.format('<div class="word-item" data-type="{1}">{0}</div>',strs[i][j].word,i));
+						}
+						htmlArray.push('<br>');
+					}
+					that.$wordContent.append(htmlArray.join(''));
+					that.$typeItems = that.$wordContent.find('.word-item');
+					that.$typeItems.click(_typeItemClick);
+				}
+				
+				function _createNameItem(){
+					that.$nameContent.empty();
+					var arr = fortuneService.getGoodNameByWord(_numArray,_currType,_currWord);
+					
+					var htmlArray = new Array();
+					htmlArray.push('<div class="space-3"></div>');
+					htmlArray.push('<div class="h3 bold">選擇名字看詳解</div><br>');
+					var item = new Array();
+					for(var i in arr){
+						htmlArray.push(String.format('<div class="name-item" data-name={1}>{0}</div>',arr[i].name+' '+arr[i].rel,arr[i].name));
+					}
+					that.$nameContent.append(htmlArray.join(''));
+					that.$nameItems = that.$nameContent.find('.name-item');
+					that.$nameItems.click(_nameItemClick);
+				}
+				
+				_init(); 
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,134 @@
+
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+	<body >
+		<div class="space-3"></div>
+		<div class="mui-col-sm-8 mui-col-sm-offset-2  mui-col-lg-4 mui-col-lg-offset-4">
+			<div class="space-1"></div>
+			<div class="mui-textfield mui-textfield--float-label">
+ 		    	<input  type="text" id="index-name-input" required  value="雲擎">
+ 		    	<label>公司名稱(主運)</label>
+ 		    	<div class="message">ex:鴻海</div>
+ 		 	</div>
+			<div class="mui-textfield mui-textfield--float-label" >
+ 		    	<input  type="text" id="index-subName-input" required value="雲端科技有限公司">
+ 		    	<label>公司行號(從運)</label>
+ 		    	<div class="message">ex:股份有限公司</div>
+ 		 	</div>
+			<div class="space-1"></div>
+			<div class="mui-btn mui-btn--raised mui-btn--primary block" id="index-submit-btn">計算</div>
+			<div class="space-1"></div>
+ 		 	<div class="content">
+ 		 		
+ 		 	</div>
+		</div>
+		
+		<script type="text/javascript">
+			window['index'] = new IndexView();
+			 
+			function IndexView(){
+				var that = this;
+				var _id = 'index';
+				var _active = false;
+				var _$view = $('.view.'+_id);
+				
+				var _html = ['<div>',
+ 		 			'<span>公司主運：</span><span>{0}</span><br>',
+ 		 			'<span>筆畫：</span><span>{1}</span><br>',
+ 		 			'<span>五行：</span><span>{2}</span><br>',
+ 		 			'<span>譯釋：</span><span>{3}</span><br>',
+ 		 		'</div><br>',
+ 		 		'<div>',
+ 		 		'	<span>總運勢：</span><span>{4}</span><br>',
+ 		 		'	<span>筆畫：</span><span>{5}</span><br>',
+ 		 		'	<span>五行：</span><span>{6}</span><br>',
+ 		 		'	<span>譯釋：</span><span>{7}</span><br>',
+ 		 		'</div>'].join('');
+				
+				/**
+				 * 初始化
+				 */
+				function _init(){
+					if(_$view.length==0){
+						return;
+					}
+					_initComponent();
+					_initEvent();
+					//向StoreManage注册绑定资料异动，必须在最后处理，避免物件尚未生成
+					manage.getStoreManage().bind(StoreDataName.ActiveView,_activeViewBind,false);
+				}
+
+				/**
+				 * 切换View绑定
+				 */
+				function _activeViewBind(store){
+					if(store.data.id==_id){
+						_active = true;
+						//滑动时 隐藏header
+						headerBar.scrollHide(false);
+					}else{
+						_active = false;
+					}
+				}
+				
+				function _initEvent(){
+					that.$submit.click(_submit);
+				}
+				
+				
+				
+				function _initComponent(){
+					that.$submit = _$view.find('#index-submit-btn');
+					that.$name = _$view.find('#index-name-input');
+					that.$subName = _$view.find('#index-subName-input');
+					that.$content = _$view.find('.content');
+				}
+				
+				function _submit(){
+					if(that.$name.val()==''){
+						alert('請輸入公司名稱！');
+						return;
+					}
+					if(that.$subName.val()==''){
+						alert('請輸入公司行號！');
+						return;
+					}
+					that.$content.empty();
+					var names = wordService.getWords(that.$name.val().split(''));
+					var subNames = wordService.getWords(that.$subName.val().split(''));
+					var count1 = 0,count2 = 0;
+					var fortune1,fortune2;
+					for(var i in names){
+						count1+=names[i].num;
+					}
+					for(var i in subNames){
+						count2+=subNames[i].num;
+						console.log(subNames[i].num)
+					}
+
+					count2+=count1;
+					
+					fortune1 = fortuneService.getFortuneByNum(count1);
+					fortune2 = fortuneService.getFortuneByNum(count2%80);
+
+					that.$content.append(String.format(_html,
+						fortune1.luck,
+						fortune1.num,
+						fortune1.type,
+						fortune1.content,
+						
+						fortune2.luck,
+						count2,
+						fortune2.type,
+						fortune2.content
+					));
+				}
+				
+				_init(); 
+			}
+		</script>
+	</body>
+</html>

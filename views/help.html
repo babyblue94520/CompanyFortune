@@ -1,0 +1,54 @@
+
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+	<body >
+		<div class="space-3"></div>
+		<div class="mui-col-sm-8 mui-col-sm-offset-2  mui-col-lg-4 mui-col-lg-offset-4">
+			請聯繫客服。
+		</div>
+		
+		<script type="text/javascript">
+			window['help'] = new HelpView();
+			 
+			function HelpView(){
+				var that = this;
+				var _id = 'help';
+				var _active = false;
+				var _$view = $('.view.'+_id);
+				
+				/**
+				 * 初始化
+				 */
+				function _init(){
+					if(_$view.length==0){
+						return;
+					}
+					//向StoreManage注册绑定资料异动，必须在最后处理，避免物件尚未生成
+					manage.getStoreManage().bind(StoreDataName.ActiveView,_activeViewBind,false);
+				}
+
+				/**
+				 * 切换View绑定
+				 */
+				function _activeViewBind(store){
+					if(store.data.id==_id){
+						_active = true;
+						//滑动时 隐藏header
+						headerBar.scrollHide(false);
+					}else{
+						_active = false;
+					}
+				}
+				
+				function _initEvent(){
+					that.$submit.click(_submit);
+				}
+				
+				_init(); 
+			}
+		</script>
+	</body>
+</html>
