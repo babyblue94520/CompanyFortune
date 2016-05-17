@@ -1,0 +1,94 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="Shortcut Icon" href="images/favicon.ico" />
+		<title>公司行號 算命</title>
+		<meta name="description" content="公司行號 算命" />
+		<meta name="keywords" content="公司行號,算命" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes, minimum-scale=1, maximum-scale=2.0" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		
+		<link rel="stylesheet" type="text/css" href="css/lib/mui-0.2.1/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/flaticon/flaticon.css" />
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+		
+		<script type="text/javascript" src="js/lib/jquery/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="js/lib/jquery/imagesloaded.pkgd.min.js"></script>
+		<script type="text/javascript" src="js/lib/mui-0.2.1/mui.js"></script>
+		
+		<script type="text/javascript" src="js/Words.js"></script>
+		<script type="text/javascript" src="js/WordsByNum.js"></script>
+		<script type="text/javascript" src="js/Fortune.js"></script>
+		<script type="text/javascript" src="js/util.js"></script>
+		<script type="text/javascript" src="js/String.js"></script>
+		
+		<script type="text/javascript" src="js/component/Date.js"></script>
+		<script type="text/javascript" src="js/component/Loader.js"></script>
+		<script type="text/javascript" src="js/component/Grid.js"></script>
+		<script type="text/javascript" src="js/component/ComboBox.js"></script>
+		<script type="text/javascript" src="js/component/MenuBox.js"></script>
+		<script type="text/javascript" src="js/component/HeaderBar.js"></script>
+		
+		<script type="text/javascript" src="js/manage/StoreDataName.js"></script>
+		<script type="text/javascript" src="js/manage/StoreManage.js"></script>
+		<script type="text/javascript" src="js/manage/DialogManage.js"></script>
+		<script type="text/javascript" src="js/manage/Manage.js"></script>
+		
+		<script type="text/javascript" src="js/service/WordService.js"></script>
+		<script type="text/javascript" src="js/service/FortuneService.js"></script>
+		
+	</head>
+	<body>
+		<div id="main-wrap" class="main-wrap">
+			<div class="header-margin"></div>
+			<div class="views"></div>
+			<div class="footer-margin"></div>
+			<div class="common-footer">
+				<div>因為要取公司行號名稱，得到了標準公式，可是字太多了，只好寫系統來算。</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			window.manage = new Manage();
+			var headerBar = new HeaderBar();
+			var wordService = new WordService();
+			var fortuneService = new FortuneService();
+			
+			$('body .footer-margin').height($('body .common-footer').height());
+			
+			$(window).load(function(){
+				inputFocusEvent();
+				
+				//处理动态生成的element 添加input focus event
+				$(document).bind('DOMNodeInserted', function () {
+					delayAction('inputFocusEvent',500,inputFocusEvent);
+				});
+			});
+			
+		    
+			//Input focus 隐藏headerbar、footerbar
+			function inputFocusEvent(){
+				$('input').unbind('focus',_inputFocus);
+				$('input').unbind('focusout',_inputFocusout);
+				
+				$('input').bind('focus',_inputFocus);
+				$('input').bind('focusout',_inputFocusout);
+				
+				function _inputFocus(){
+					if(!$(this).attr('readonly')){
+						headerBar.hide();
+						manage.getStoreManage().set(StoreDataName.InputFocus,true);
+					}
+				}
+				
+				function _inputFocusout(){
+					if(!$(this).attr('readonly')){
+						headerBar.show();
+						manage.getStoreManage().set(StoreDataName.InputFocus,false);
+					}
+				}
+			}
+		</script>
+	</body>
+</html>
