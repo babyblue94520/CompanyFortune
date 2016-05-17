@@ -183,7 +183,7 @@ function Manage(){
 		//	type:'get',
 		//	callback:function(){
 				_initUrlParamValue();
-				manage.loadView(_getUrlParamValue('view')||'index');
+				that.loadView(_getUrlParamValue('view')||'index');
 		//	}
 		//});
 	}
