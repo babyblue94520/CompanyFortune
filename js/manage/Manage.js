@@ -178,14 +178,14 @@ function Manage(){
 		
 		
 		//向Server取得资料
-		//that.ajax({
-		//	url:_urls['initialize'],
-		//	type:'get',
-		//	callback:function(){
+		that.ajax({
+			url:_urls['initialize'],
+			type:'get',
+			callback:function(){
 				_initUrlParamValue();
-				that.loadView(_getUrlParamValue('view')||'index');
-		//	}
-		//});
+				manage.loadView(_getUrlParamValue('view')||'index');
+			}
+		});
 	}
 	
 	

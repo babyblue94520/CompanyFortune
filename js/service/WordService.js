@@ -16,10 +16,6 @@ function WordService(){
 			alert('WordsObject load fail');
 			return null;
 		}
-		if(!/^[\u4e00-\u9fa5]+$/.test(word)){
-			alert('只允許輸入漢字');
-			return null;
-		}
 		return WordsObject[word];
 	}
 	
@@ -34,10 +30,6 @@ function WordService(){
 			return null;
 		}
 		if(!words||words.length==0){
-			return null;
-		}
-		if(!/^[\u4e00-\u9fa5]+$/.test(words.join(''))){
-			alert('只允許輸入漢字');
 			return null;
 		}
 		var result = new Array();
