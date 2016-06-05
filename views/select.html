@@ -190,7 +190,7 @@
 					manage.getLoader().open('計算中');
 					window.workerThread = new JsThread({
 						arguments:[_numArray,_currType,_currWord],
-						run:function(){fortuneService.getGoodNameByWord.apply(arguments)},
+						run:fortuneService.getGoodNameByWord,
 						callback:function(e){
 							console.log(e.status);
 							var arr = e.data;
@@ -208,6 +208,7 @@
 						}
 
 					});
+					window.workerThread.start();
 					//var arr = fortuneService.getGoodNameByWord(_numArray,_currType,_currWord);
 					
 
