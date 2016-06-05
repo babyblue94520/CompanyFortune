@@ -187,7 +187,8 @@
 				
 				function _createNameItem(){
 					that.$nameContent.empty();
-					var thread = new JsThread({
+					manage.getLoader().open('計算中');
+					window.workerThread = new JsThread({
 						arguments:[_numArray,_currType,_currWord],
 						run:fortuneService.getGoodNameByWord,
 						callback:function(e){
@@ -203,9 +204,10 @@
 							that.$nameContent.append(htmlArray.join(''));
 							that.$nameItems = that.$nameContent.find('.name-item');
 							that.$nameItems.click(_nameItemClick);
+							manage.getLoader().close();
 						}
 
-					})
+					});
 					//var arr = fortuneService.getGoodNameByWord(_numArray,_currType,_currWord);
 					
 
