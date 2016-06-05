@@ -19,6 +19,7 @@ function Loader(conf){
 	
 	var _$loader = false;
 	var _$text;
+	var _openCount = 0;
 	
 	if(!_$loader){
 		_$loader = $(_loadHtml);
@@ -41,12 +42,14 @@ function Loader(conf){
 	    }
 	    _$loader.addClass('show');
 	    $('body').addClass('loader-hidden');
+		_openCount++;
 	}
 	
 	/**
 	 * open close
 	 */
 	_this.close = function(){
+		if(--_openCount!=0)return;
 		_$loader.css('z-index','');
 	    _$loader.removeClass('show');
 	    $('body').removeClass('loader-hidden');
