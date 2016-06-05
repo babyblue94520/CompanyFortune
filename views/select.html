@@ -187,18 +187,28 @@
 				
 				function _createNameItem(){
 					that.$nameContent.empty();
-					var arr = fortuneService.getGoodNameByWord(_numArray,_currType,_currWord);
+					var thread = new JsThread({
+						arguments:[_numArray,_currType,_currWord],
+						run:fortuneService.getGoodNameByWord,
+						callback:function(e){
+							console.log(e.status);
+							var arr = e.data;
+							var htmlArray = new Array();
+							htmlArray.push('<div class="space-3"></div>');
+							htmlArray.push('<div class="h3 bold">選擇名字看詳解</div><br>');
+							var item = new Array();
+							for(var i in arr){
+								htmlArray.push(String.format('<div class="name-item" data-name={1}>{0}</div>',arr[i].name+' '+arr[i].rel,arr[i].name));
+							}
+							that.$nameContent.append(htmlArray.join(''));
+							that.$nameItems = that.$nameContent.find('.name-item');
+							that.$nameItems.click(_nameItemClick);
+						}
+
+					})
+					//var arr = fortuneService.getGoodNameByWord(_numArray,_currType,_currWord);
 					
-					var htmlArray = new Array();
-					htmlArray.push('<div class="space-3"></div>');
-					htmlArray.push('<div class="h3 bold">選擇名字看詳解</div><br>');
-					var item = new Array();
-					for(var i in arr){
-						htmlArray.push(String.format('<div class="name-item" data-name={1}>{0}</div>',arr[i].name+' '+arr[i].rel,arr[i].name));
-					}
-					that.$nameContent.append(htmlArray.join(''));
-					that.$nameItems = that.$nameContent.find('.name-item');
-					that.$nameItems.click(_nameItemClick);
+
 				}
 				
 				_init(); 
