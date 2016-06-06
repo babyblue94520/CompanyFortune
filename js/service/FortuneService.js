@@ -148,7 +148,7 @@ function FortuneService(){
 				}
 			}
 			if (++index  < wordCount) {
-				temps = _getNiceWord(temps,index,type);
+				temps = _getNiceWord(temps,index,nextType);
 			}
 
 			return temps;
