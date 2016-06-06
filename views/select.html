@@ -186,13 +186,14 @@
 				}
 				
 				function _createNameItem(){
+					var t = new Date().getTime();
 					that.$nameContent.empty();
 					manage.getLoader().open('計算中');
 					window.workerThread = new JsThread({
 						arguments:[_numArray,_currType,_currWord,WordsByNumObject],
 						run:fortuneService.getGoodNameByWord,
 						callback:function(e){
-							console.log(e.status,e.data.length);
+							console.log('狀態：',e.status,'最佳名稱組合數：',e.data.length);
 							var arr = e.data;
 							var htmlArray = new Array();
 							htmlArray.push('<div class="space-3"></div>');
@@ -208,6 +209,7 @@
 							that.$nameItems = that.$nameContent.find('.name-item');
 							that.$nameItems.click(_nameItemClick);
 							manage.getLoader().close();
+							console.log('運行時間：'+((new Date().getTime()-t)/1000)+'s');
 						}
 
 					});
