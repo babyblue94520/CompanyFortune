@@ -192,7 +192,7 @@
 						arguments:[_numArray,_currType,_currWord,WordsByNumObject],
 						run:fortuneService.getGoodNameByWord,
 						callback:function(e){
-							console.log(e.status);
+							console.log(e.status,e.data.length);
 							var arr = e.data;
 							var htmlArray = new Array();
 							htmlArray.push('<div class="space-3"></div>');
