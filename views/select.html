@@ -200,6 +200,9 @@
 							var item = new Array();
 							for(var i in arr){
 								htmlArray.push(String.format('<div class="name-item" data-name={1}>{0}</div>',arr[i].name+' '+arr[i].rel,arr[i].name));
+								if(i>1000){
+									break;
+								}
 							}
 							that.$nameContent.append(htmlArray.join(''));
 							that.$nameItems = that.$nameContent.find('.name-item');
