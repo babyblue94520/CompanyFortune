@@ -144,7 +144,7 @@ function FortuneService(){
 
 			for (var i in strs) {
 				for(var j in nameArray){
-					temps.push({name: nameArray[j].name + strs[i].word, rel:nameArray[j].type+' 生 '+nextType});
+					temps.push({name: nameArray[j].name + strs[i].word, rel:nameArray[j].rel+' 生 '+nextType});
 				}
 			}
 			if (++index  < wordCount) {
