@@ -134,8 +134,9 @@ function FortuneService(){
 
 		//相生
 		var _create = ['木','火','土','金','水'];
-
+		window.count = 0;
 		function _getNiceWord(name,typeStr,index,type){
+			window.count++;
 			var temps = new Array();
 			var nextType = _create[(_create.indexOf(type)+1)%5];
 			var strs = WordsByNumObject[numArray[index]][nextType]||[];
