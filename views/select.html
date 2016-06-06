@@ -189,7 +189,7 @@
 					that.$nameContent.empty();
 					manage.getLoader().open('計算中');
 					window.workerThread = new JsThread({
-						arguments:[_numArray,_currType,_currWord],
+						arguments:[_numArray,_currType,_currWord,WordsByNumObject],
 						run:fortuneService.getGoodNameByWord,
 						callback:function(e){
 							console.log(e.status);
@@ -210,7 +210,7 @@
 					});
 					window.workerThread.start();
 					//var arr = fortuneService.getGoodNameByWord(_numArray,_currType,_currWord);
-					
+
 
 				}
 				

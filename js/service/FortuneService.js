@@ -129,21 +129,16 @@ function FortuneService(){
 	/**
 	 * 取得好名字組合
 	 */
-	function _getGoodNameByWord(numArray,type,word){
+	function _getGoodNameByWord(numArray,type,word,WordsByNumObject){
+
+
 		//相生
 		var _create = ['木','火','土','金','水'];
-		var result = new Array();
-		var resultObj = {numArray:numArray};
 
-		var relation = new Array();
-		
-		var nextType = _create[(_create.indexOf(type)+1)%5];
-		
-		
 		function _getNiceWord(name,typeStr,index,type){
 			var temps = new Array();
 			var nextType = _create[(_create.indexOf(type)+1)%5];
-			var strs = WordsByNumObject[numArray[index]][nextType];
+			var strs = WordsByNumObject[numArray[index]][nextType]||[];
 			
 			for(var i in strs){
 				if(index+1>=numArray.length){
