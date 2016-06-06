@@ -131,30 +131,29 @@ function FortuneService(){
 	 */
 	function _getGoodNameByWord(numArray,type,word,WordsByNumObject){
 
-		var count = 0;
-		try {
-			//相生
-			var _create = ['木', '火', '土', '金', '水'];
+		//相生
+		var _create = ['木', '火', '土', '金', '水'];
+		var wordCount = numArray.length;
 
-			function _getNiceWord(name, typeStr, index, type) {
+		function _getNiceWord(nameArray, index, type) {
 
-				var temps = new Array();
-				var nextType = _create[(_create.indexOf(type) + 1) % 5];
-				var strs = WordsByNumObject[numArray[index]][nextType] || [];
+			var temps = new Array();
+			var nextType = _create[(_create.indexOf(type) + 1) % 5];
+			var strs = WordsByNumObject[numArray[index]][nextType] || [];
+			var end = false;
 
-				for (var i in strs) {
-					if (index + 1 >= numArray.length) {
-						temps.push({name: name + strs[i].word, rel: '(' + typeStr + ' 生 ' + nextType + ')'})
-					} else {
-						temps = temps.concat(_getNiceWord(name + strs[i].word, typeStr + ' 生 ' + nextType, index + 1, nextType))
-					}
+			for (var i in strs) {
+				for(var j in nameArray){
+					temps.push({name: nameArray[j].name + strs[i].word, rel:nameArray[j].type+' 生 '+nextType});
 				}
-				return temps;
 			}
-		}catch(e){
-			return count;
+			if (++index  < wordCount) {
+				temps = _getNiceWord(temps,index,type);
+			}
+
+			return temps;
 		}
-		return _getNiceWord(word,type,1,type);
+		return _getNiceWord([{name:word,rel:type}],1,type);
 	}
 }
 
