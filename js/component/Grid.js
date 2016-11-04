@@ -76,8 +76,8 @@ function Grid(config){
 	        '<div class="m-grid-footer">',
 				'<div class="m-grid-pagination">',
 			        '<div class="m-grid-pagination-left">',
-						'<div class="m-grid-pagination-first flaticon-media25"></div>',
-						'<div class="m-grid-pagination-prev flaticon-media23"></div>',
+						'<div class="m-grid-pagination-first flaticon-arrows-1"></div>',
+						'<div class="m-grid-pagination-prev flaticon-arrow-1"></div>',
 					'</div>',
 					'<div class="m-grid-pagination-page">',
 						'<span>第 </span>',
@@ -85,8 +85,8 @@ function Grid(config){
 						'<span> 页</span>',
 					'</div>',
 					'<div class="m-grid-pagination-right">',
-						'<div class="m-grid-pagination-next flaticon-media23"></div>',
-						'<div class="m-grid-pagination-last flaticon-media25"></div>',
+						'<div class="m-grid-pagination-next flaticon-arrow-1"></div>',
+						'<div class="m-grid-pagination-last flaticon-arrows-1"></div>',
 					'</div>',
 				'</div>',
 				'<div class="m-grid-footer-text"></div>',
@@ -97,7 +97,7 @@ function Grid(config){
 	var _rowTemplate = '<tr class="m-grid-row">{0}</tr>';
 	var _thTemplate = '<td nowrap="nowrap">{0}</td>';
 	var _tdTemplate = '<td class="{0}" nowrap="{1}" align="{2}" >{3}</td>';
-	var _arrowTemplate = '<td align="center"><div class="m-grid-row-open flaticon-magnifier13"></div></td>';
+	var _arrowTemplate = '<td align="center"><div class="m-grid-row-open flaticon-search"></div></td>';
 	var _indexTemplate = '<td nowrap="nowrap" align="center" >{0}</td>';
 	
 	var _rowContentTemplate = '<tr class="m-grid-row-content"><td colspan="{0}" >{1}</td></tr>';
@@ -136,16 +136,16 @@ function Grid(config){
 
 	//预设参数
 	var _defStore = {
-		pageIndex:1,
-		records:[],
-		total:0
+		number:1,
+		content:[],
+		totalElements:0
 	};
 	var _store = {};
 	
 	var _defParam = {
-		pageIndex:1,
-		records:[],
-		total:0
+		number:1,
+		content:[],
+		totalElements:0
 	};
 	
 	var _param = {};
@@ -154,22 +154,20 @@ function Grid(config){
 	that.load = _load;
 	that.reload = _reload;
 	that.refresh = _refresh;
+	that.gridEl = false;
 	
 	//初始化
 	
 	function _init(){
 		//element 不存在
-		if(!that.config.appendId){
-			alert('尚未设定 appendId！');
-			return;
-		}
-		//element 不存在
 		if(!that.config.columnModel.recordColumns){
 			alert('尚未设定 column！');
 			return;
 		}
-		
-		var $appendEl = $('#'+that.config.appendId);
+		var $appendEl = false;
+		if(that.config.appendId){
+			$appendEl = $('#'+that.config.appendId);
+		}
 		
 		if(!_$grid){
 			_$grid = $(_gridTemplat);
@@ -187,7 +185,7 @@ function Grid(config){
 			
 			//生成thead
 			var column;
-			var columnArray = new Array();
+			var columnArray = [];
 			var l = that.config.columnModel.recordColumns.length;
 			if(that.config.showMore){
 				columnArray.push(String.format(_thTemplate,''));
@@ -209,32 +207,27 @@ function Grid(config){
 			column = columnArray = null;
 			// 设定tbody 无资料
 			_setTbodyNoData();
-			$appendEl.append(_$grid);
+			that.gridEl = _$grid;
+			if($appendEl){
+				$appendEl.append(_$grid);
+			}
 		}
 		$.extend(_store,_defStore);
 		$.extend(_param,_defParam);
 		_initEvent();
+		
+		return _$grid;
 	}
 	
 	/**
 	 * 初始化事件
 	 */
 	function _initEvent(){
-		_$grid.find('.m-grid-refresh').click(function(){
-			_refresh();
-		});
-		_$grid.find('.m-grid-pagination-first').click(function(){
-			_first();
-		});
-		_$grid.find('.m-grid-pagination-prev').click(function(){
-			_prev();
-		});
-		_$grid.find('.m-grid-pagination-next').click(function(){
-			_next();
-		});
-		_$grid.find('.m-grid-pagination-last').click(function(){
-			_last();
-		});
+		_$grid.find('.m-grid-refresh').click(_refresh);
+		_$grid.find('.m-grid-pagination-first').click(_first);
+		_$grid.find('.m-grid-pagination-prev').click(_prev);
+		_$grid.find('.m-grid-pagination-next').click(_next);
+		_$grid.find('.m-grid-pagination-last').click(_last);
 		//页码输入查询
 		_$pageInput.change(_setPage);
 	}
@@ -248,7 +241,7 @@ function Grid(config){
 		if(!that.config.columnModel.contentColumns)return;
 		var $rows = _$tbody.find('.m-grid-row');
 		$.each($rows,function(key,value){
-			$rows.eq(key).bind('click',{record:_store.records[key]},_rowOnClick);
+			$rows.eq(key).bind('click',{record:_store.content[key]},_rowOnClick);
 		});
 		$rows = null;
 	}
@@ -258,8 +251,9 @@ function Grid(config){
 	 * @param e Event
 	 */
 	function _rowOnClick(e){
+		e.stopPropagation();
 		if(that.config.onRowClick){
-			that.config.onRowClick.apply(this,[e.data.record]);
+			that.config.onRowClick.apply(this,[e,e.data.record]);
 		}
 		var $that = $(this);
 		if($that.hasClass('active')){
@@ -275,7 +269,6 @@ function Grid(config){
 	 * 查询资料
 	 * @param {object} form data
 	 */
-	
 	function _load(){
 		if(that.config.onBeforeLoad){
 			that.config.onBeforeLoad();
@@ -286,31 +279,32 @@ function Grid(config){
 		_formData['size'] = that.config.size;
 		
 		//设定页码
-		_$pageInput.val(_param.pageIndex);
+		_$pageInput.val(_param.number);
 		
-		mobileManage.getLoader().open('查询中');
+		webManage.getLoader().open('查询中');
+		_formData.number--;
 		//查询
-		mobileManage.ajax({
+		webManage.ajax({
 			url:that.config.dataUrl,
 			param:_formData,
-			timeout:20000,
+			type:'GET',
 			callback:function (result) {
-				mobileManage.getLoader().close();
+				webManage.getLoader().close();
 				if(result.success){
-					$.extend(_store,result.data);
-					_param.total = result.data.total;
-					if(_param.total==0){
+					$.extend(_store,result);
+					_param.totalElements = result.totalElements;
+					if(_param.totalElements==0){
 						_setTbodyNoData('无资料');
-						_param.pageIndex = 1;
+						_param.number = 1;
 					}else{
 						_setTbodyData();
-						_param.pageIndex = result.data.pageIndex;
+						_param.number = result.number+1;
 					}
 				}else{
 					_setTbodyNoData(result.message);
-					_param.pageIndex = 1;
+					_param.number = 1;
 				}
-				_$pageInput.val(_param.pageIndex);
+				_$pageInput.val(_param.number);
 				if(that.config.onLoad){
 					that.config.onLoad(result);
 				}
@@ -327,54 +321,61 @@ function Grid(config){
 	/**
 	 * 第一页
 	 */
-	function _first(){
-		if(_param.pageIndex<=1)return;
-		_param.pageIndex = 1;
+	function _first(e){
+		e.stopPropagation();
+		if(_param.number<=1)return;
+		_param.number = 1;
 		_load();
 	}
 
 	/**
 	 * 上一页
 	 */
-	function _prev(){
-		if(_param.pageIndex<=1)return;
-		_param.pageIndex--;
+	function _prev(e){
+		e.stopPropagation();
+		if(_param.number<=1)
+			return;
+		
+		_param.number--;
 		_load();
 	}
 	/**
 	 * 下一页
 	 */
-	function _next(){
-		if(_param.pageIndex==_getTotalPage())return;
-		_param.pageIndex++;
+	function _next(e){
+		e.stopPropagation();
+		if(_param.number==_gettotalElementsPage())return;
+		_param.number++;
 		_load();
 		
 	}
 	/**
 	 * 最后一页
 	 */
-	function _last(){
-		var i = _getTotalPage();
-		if(_param.pageIndex==i)return;
-		_param.pageIndex = i;
+	function _last(e){
+		e.stopPropagation();
+		var i = _gettotalElementsPage();
+		if(_param.number==i)return;
+		_param.number = i;
 		_load();
 	}
 
 	/**
 	 * 刷新
 	 */
-	function _refresh(){
+	function _refresh(e){
+		e.stopPropagation();
 		_load();
 	}
 	
 	/**
 	 * 取得总页数
 	 */
-	function _getTotalPage(){
-		if(_param.total<1||that.config.size<1){
+	function _gettotalElementsPage(){
+		if(_param.totalElements<1||that.config.size<1){
 			return 1;
 		}
-		return Math.ceil(_param.total/that.config.size);
+		return Math.ceil(_param.totalElements/that.config.size);
 	}
 	
 	/**
@@ -386,12 +387,12 @@ function Grid(config){
 		}
 		if(_$pageInput.val()){
 			delayAction('input query',300,function(){
-				var i = _getTotalPage();
-				if(_param.pageIndex==_$pageInput.val())return;
+				var i = _gettotalElementsPage();
+				if(_param.number==_$pageInput.val())return;
 				if(i<=_$pageInput.val()){
-					_param.pageIndex = i;
+					_param.number = i;
 				}else{
-					_param.pageIndex = _$pageInput.val();
+					_param.number = _$pageInput.val();
 				}
 				_load();
 			});
@@ -405,7 +406,7 @@ function Grid(config){
 		var row;
 		var rows = [];
 		var cols = [];
-		var index = (_store.pageIndex-1) * that.config.size+1;
+		var index = (_store.number) * that.config.size+1;
 		var colspan = that.config.columnModel.recordColumns.length;
 		var moreTd = '';
 		var indexTd = '';
@@ -420,9 +421,9 @@ function Grid(config){
 		
 		var record;
 		var column;
-		for(var i = 0,length = _store.records.length;i<length;i++,index++){
+		for(var i = 0,length = _store.content.length;i<length;i++,index++){
 			cols = [];
-			record = _store.records[i];
+			record = _store.content[i];
 			cols.push(moreTd);
 			cols.push(String.format(indexTd,index));
 			for(var j = 0,length2 = that.config.columnModel.recordColumns.length;j<length2;j++){
@@ -442,7 +443,7 @@ function Grid(config){
 		}
 		_$tbody.html(rows.join(''));
 		//页数说明
-		_$footer.html(String.format(_footerText,Math.ceil(_store.total/that.config.size),_store.total));
+		_$footer.html(String.format(_footerText,Math.ceil(_store.totalElements/that.config.size),_store.totalElements));
 		_initOpenEvent();
 	}
 	

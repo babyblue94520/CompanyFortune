@@ -1,0 +1,76 @@
+
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+	<body >
+		<div class="space-2"></div>
+		<div class="mui-col-xs32-10 mui-col-xs32-offset-1">
+ 		    <h3>公司行號筆畫的吉凶表</h3>
+			<div class="space-1"></div>
+			<div class="content"></div>
+			<div class="space-1"></div>
+		</div>
+		<script type="text/javascript">
+			window['companyWordNumFortune'] = new CompanyWordNumFortuneView();
+			 
+			function CompanyWordNumFortuneView(){
+				var that = this;
+				var _id = 'companyWordNumFortune';
+				var _active = false;
+				var _$view = $('.view.'+_id);
+				
+				
+				_init();
+				/**
+				 * 初始化
+				 */
+				function _init(){
+					if(_$view.length==0){
+						return;
+					}
+					_initComponent();
+					_initEvent();
+					_createTable();
+					//向StoreManage注册绑定资料异动，必须在最后处理，避免物件尚未生成
+					webManage.getStoreService().bind(StoreDataName.ACTIVEVIEW,_activeViewBind,false);
+				}
+
+				/**
+				 * 切换View绑定
+				 */
+				function _activeViewBind(store){
+					if(store.data.id==_id){
+						_active = true;
+						//滑动时 隐藏header
+						headerBar.scrollHide(false);
+					}else{
+						_active = false;
+					}
+				}
+				
+				function _initEvent(){
+				}
+				
+				function _initComponent(){
+				}
+				
+				function _createTable(){
+					if(!FortuneArray||!$.isArray(FortuneArray))return;
+
+					var tableHtmlTpl = '<table><tr><th nowrap="nowrap">筆畫</th><th nowrap="nowrap">五行</th><th nowrap="nowrap">吉凶</th><th nowrap="nowrap">義釋</th></tr>{0}</table>';
+					var trHtmlTpl = '<tr><td align="center" width="1%" nowrap="nowrap">{0}</td><td align="center" width="1%" nowrap="nowrap">{1}</td><td align="center" width="1%" nowrap="nowrap">{2}</td><td>{3}</td></tr>';
+					
+					var tempArray = [];
+					for(var i in FortuneArray){
+						tempArray.push(String.format(trHtmlTpl,FortuneArray[i]['num'],FortuneArray[i]['type'],FortuneArray[i]['luck'],FortuneArray[i]['content']));
+					}
+					console.log(String.format(tableHtmlTpl,tempArray.join('')))
+					_$view.find('.content').append(String.format(tableHtmlTpl,tempArray.join('')));
+				}
+				
+			}
+		</script>
+	</body>
+</html>

@@ -27,7 +27,7 @@
 						return;
 					}
 					//向StoreManage注册绑定资料异动，必须在最后处理，避免物件尚未生成
-					manage.getStoreManage().bind(StoreDataName.ActiveView,_activeViewBind,false);
+					webManage.getStoreService().bind(StoreDataName.ACTIVEVIEW,_activeViewBind,false);
 				}
 
 				/**

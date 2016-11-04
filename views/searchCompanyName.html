@@ -15,14 +15,14 @@
 			<div class="space-1"></div>
 			<div class="mui-col-sm-6 ">
 				<div class="mui-textfield mui-textfield--float-label">
-	 		    	<input  type="text" id="select-count1-input" required value="29">
+	 		    	<input  type="text" id="searchCompanyName-count1-input" required value="29">
 	 		    	<label>公司名稱筆畫</label>
 	 		    	<div class="message"></div>
 	 		 	</div>
 	 		 </div>
 			<div class="mui-col-sm-6">
 				<div class="mui-textfield mui-textfield--float-label" >
-	 		    	<input  type="text" id="select-count2-input" required value="2">
+	 		    	<input  type="text" id="searchCompanyName-count2-input" required value="2">
 	 		    	<label>公司名稱字數</label>
 	 		    	<div class="message"></div>
 	 		 	</div>
@@ -31,18 +31,20 @@
 		<div class="space-1"></div>
 		
 		<div class="mui-col-sm-10 mui-col-sm-offset-1 ">
-	 		<div class="numArrayContent"></div>
-	 		<div class="wordContent"></div>
-	 		<div class="nameContent"></div>
+	 		<div class="numArrayContent"><div></div></div>
+	 		<div class="space-2"></div>
+	 		<div class="wordContent"><div></div></div>
+	 		<div class="space-2"></div>
+	 		<div class="nameContent"><div></div></div>
 	 	</div>
 		<div class="space-1"></div>
 		
 		<script type="text/javascript">
-			window['select'] = new SelectView();
+			window['searchCompanyName'] = new SearchCompanyNameView();
 			 
-			function SelectView(){
+			function SearchCompanyNameView(){
 				var that = this;
-				var _id = 'select';
+				var _id = 'searchCompanyName';
 				var _active = false;
 				var _$view = $('.view.'+_id);
 				var dictionary;
@@ -101,23 +103,29 @@
 				
 				
 				function _initComponent(){
-					that.$count1 = _$view.find('#select-count1-input');
-					that.$count2 = _$view.find('#select-count2-input');
+					that.$count1 = _$view.find('#searchCompanyName-count1-input');
+					that.$count2 = _$view.find('#searchCompanyName-count2-input');
 					that.$numArrayContent = _$view.find('.numArrayContent');
 					that.$wordContent = _$view.find('.wordContent');
 					that.$nameContent = _$view.find('.nameContent');
 				}
 				
+				//
 				function _numArrayItemClick(){
-					that.$numArrayItems.removeClass('active');
-					$(this).addClass('active');
+					that.$numArrayContent.height(that.$numArrayContent.find('.h3').height());
+					
+					that.$numArrayContent.find('.item-active').html(this.innerHTML+'<span class="flaticon-shapes"></span>')
+					that.$numArrayContent.find('.item-active').one('click',_itemActiveClick);
 					_numArray = JSON.parse($(this).html());
 					_createWordItem();
 				}
 
 				function _typeItemClick(){
-					that.$typeItems.removeClass('active');
-					$(this).addClass('active');
+
+					that.$wordContent.height(that.$numArrayContent.find('.h3').height());
+					that.$wordContent.find('.item-active').html(this.innerHTML+'<span class="flaticon-shapes"></span>')
+					that.$wordContent.find('.item-active').one('click',_itemActiveClick);
+					
 					_currType = $(this).attr('data-type');
 					_currWord = $(this).html();
 					_createNameItem();
@@ -146,31 +154,38 @@
 					
 				}
 				
+				//取消選取
+				function _itemActiveClick(){
+					var $el = $(this);
+					$el.html('');
+					$el.parent().parent().parent().height('auto');
+				}
+				
+				//筆畫組合
 				function _createNumArrayItem(){
-					that.$numArrayContent.empty();
-					that.$wordContent.empty();
-					that.$nameContent.empty();
+					that.$numArrayContent.find('>div').empty();
+					that.$wordContent.find('>div').empty();
+					that.$nameContent.find('>div').empty();
 					if(that.$count1.val()&&that.$count2.val()){
 						var arr = fortuneService.getBestWordNum(parseInt(that.$count1.val()),parseInt(that.$count2.val()));
 						var item = [];
-						item.push('<div class="h3 bold">選擇名字筆劃組合</div><br>');
+						item.push('<div class="h3 bold">選擇名字筆劃組合：<span class="item-active"></span></div><br>');
 						for(var i in arr){
 							item.push(String.format('<div class="num-array-item">{0}</div>',JSON.stringify(arr[i])));
 						}
-						that.$numArrayContent.append(item.join(''))
+						that.$numArrayContent.find('>div').append(item.join(''))
 						that.$numArrayItems = that.$numArrayContent.find('.num-array-item');
 						that.$numArrayItems.click(_numArrayItemClick);
 					}
 				}
 				
+				//第一個字
 				function _createWordItem(){
 					if(!_numArray)return;
-					that.$wordContent.empty();
-					that.$nameContent.empty();
+					that.$wordContent.find('>div').empty();
+					that.$nameContent.find('>div').empty();
 					var htmlArray = [];
-					htmlArray.push('<br>');
-					htmlArray.push('<div class="space-3"></div>');
-					htmlArray.push('<div class="h3 bold">選擇名稱開頭</div><br>');
+					htmlArray.push('<div class="h3 bold">選擇名稱開頭：<span class="item-active"></span></div><br>');
 					var strs = WordsByNumObject[_numArray[0]];
 					var item = [];
 					for(var i in strs){
@@ -180,14 +195,15 @@
 						}
 						htmlArray.push('<br>');
 					}
-					that.$wordContent.append(htmlArray.join(''));
+					that.$wordContent.find('>div').append(htmlArray.join(''));
 					that.$typeItems = that.$wordContent.find('.word-item');
 					that.$typeItems.click(_typeItemClick);
 				}
 				
+				//以第一個字下去組合的最佳名稱
 				function _createNameItem(){
 					var t = new Date().getTime();
-					that.$nameContent.empty();
+					that.$nameContent.find('>div').empty();
 					webManage.getLoader().open('計算中');
 					window.workerThread = new JsThread({
 						arguments:[_numArray,_currType,_currWord,WordsByNumObject],
@@ -196,7 +212,6 @@
 							console.log('狀態：',e.status,'最佳名稱組合數：',e.data.length);
 							var arr = e.data;
 							var htmlArray = [];
-							htmlArray.push('<div class="space-3"></div>');
 							htmlArray.push('<div class="h3 bold">選擇名字看詳解</div><br>');
 							var item = [];
 							for(var i in arr){
@@ -205,7 +220,7 @@
 									break;
 								}
 							}
-							that.$nameContent.append(htmlArray.join(''));
+							that.$nameContent.find('>div').append(htmlArray.join(''));
 							that.$nameItems = that.$nameContent.find('.name-item');
 							that.$nameItems.click(_nameItemClick);
 							webManage.getLoader().close();
