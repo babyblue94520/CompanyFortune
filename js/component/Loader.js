@@ -42,8 +42,8 @@ function Loader(conf){
 	    }
 	    _$loader.addClass('show');
 	    $('body').addClass('loader-hidden');
-		_openCount++;
-	}
+	    _openCount++;
+	};
 	
 	/**
 	 * open close
@@ -53,6 +53,6 @@ function Loader(conf){
 		_$loader.css('z-index','');
 	    _$loader.removeClass('show');
 	    $('body').removeClass('loader-hidden');
-	}
+	};
 	
 }

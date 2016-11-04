@@ -1,9 +1,9 @@
-	/*
-  	Flaticon icon font: Flaticon
-  	Creation date: 02/11/2016 04:22
-  	*/
+    /*
+    Flaticon icon font: Flaticon
+    Creation date: 02/11/2016 04:22
+    */
 
-@font-face {
+    @font-face {
   font-family: "Flaticon";
   src: url("./Flaticon.eot");
   src: url("./Flaticon.eot?#iefix") format("embedded-opentype"),
@@ -21,14 +21,22 @@
   }
 }
 
-[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
-[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
-  font-family: Flaticon;
-        font-size: 20px;
-font-style: normal;
-}
+    .fi:before{
+        display: inline-block;
+  font-family: "Flaticon";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+    }
 
-.flaticon-application:before { content: "\f100"; }
+    .flaticon-application:before { content: "\f100"; }
 .flaticon-arrow:before { content: "\f101"; }
 .flaticon-arrows:before { content: "\f102"; }
 .flaticon-arrows-1:before { content: "\f103"; }
@@ -64,3 +72,40 @@ font-style: normal;
 .flaticon-tool:before { content: "\f121"; }
 .flaticon-web:before { content: "\f122"; }
 .flaticon-web-1:before { content: "\f123"; }
+    
+    $font-Flaticon-application: "\f100";
+    $font-Flaticon-arrow: "\f101";
+    $font-Flaticon-arrows: "\f102";
+    $font-Flaticon-arrows-1: "\f103";
+    $font-Flaticon-arrows-2: "\f104";
+    $font-Flaticon-black: "\f105";
+    $font-Flaticon-circle: "\f106";
+    $font-Flaticon-coins: "\f107";
+    $font-Flaticon-factory: "\f108";
+    $font-Flaticon-fortune-teller: "\f109";
+    $font-Flaticon-gear: "\f10a";
+    $font-Flaticon-hands: "\f10b";
+    $font-Flaticon-interface: "\f10c";
+    $font-Flaticon-interface-1: "\f10d";
+    $font-Flaticon-interface-2: "\f10e";
+    $font-Flaticon-lock: "\f10f";
+    $font-Flaticon-mark: "\f110";
+    $font-Flaticon-money: "\f111";
+    $font-Flaticon-money-1: "\f112";
+    $font-Flaticon-money-2: "\f113";
+    $font-Flaticon-money-3: "\f114";
+    $font-Flaticon-nature: "\f115";
+    $font-Flaticon-people: "\f116";
+    $font-Flaticon-search: "\f117";
+    $font-Flaticon-shapes: "\f118";
+    $font-Flaticon-signs: "\f119";
+    $font-Flaticon-social: "\f11a";
+    $font-Flaticon-social-1: "\f11b";
+    $font-Flaticon-starred: "\f11c";
+    $font-Flaticon-symbol: "\f11d";
+    $font-Flaticon-symbol-1: "\f11e";
+    $font-Flaticon-technology: "\f11f";
+    $font-Flaticon-time: "\f120";
+    $font-Flaticon-tool: "\f121";
+    $font-Flaticon-web: "\f122";
+    $font-Flaticon-web-1: "\f123";
