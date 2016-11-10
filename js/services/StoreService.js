@@ -95,6 +95,7 @@ function StoreService(){
 	 * 
 	 */
 	function _set(name,data){
+		console.log(name,data)
 		if(typeof name !== 'string'){
 			alert('set name 传入资料格式错误，必须为String！')
 		}

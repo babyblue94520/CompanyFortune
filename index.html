@@ -83,14 +83,14 @@
 				function _inputFocus(){
 					if(!$(this).attr('readonly')){
 						headerBar.hide();
-						webManage.getStoreService().set(StoreDataName.InputFocus,true);
+						webManage.getStoreService().set(StoreDataName.INPUTFOCUS,true);
 					}
 				}
 				
 				function _inputFocusout(){
 					if(!$(this).attr('readonly')){
 						headerBar.show();
-						webManage.getStoreService().set(StoreDataName.InputFocus,false);
+						webManage.getStoreService().set(StoreDataName.INPUTFOCUS,false);
 					}
 				}
 			}
