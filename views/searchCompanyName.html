@@ -100,8 +100,6 @@
 					});
 				}
 				
-				
-				
 				function _initComponent(){
 					that.$count1 = _$view.find('#searchCompanyName-count1-input');
 					that.$count2 = _$view.find('#searchCompanyName-count2-input');
@@ -163,6 +161,10 @@
 				
 				//筆畫組合
 				function _createNumArrayItem(){
+					that.$numArrayContent.height('auto');
+					that.$wordContent.height('auto');
+					that.$nameContent.height('auto');
+					
 					that.$numArrayContent.find('>div').empty();
 					that.$wordContent.find('>div').empty();
 					that.$nameContent.find('>div').empty();
