@@ -12,9 +12,9 @@
     
 	```js
 	new JsThread({
-		arguments:傳入參數,
-		run:要執行的方法 run function,
-		callback:返回
+		arguments:[全域參數],
+		run:function(){執行...},
+		callback:function(){返回...}
 	});
 	```
 	
