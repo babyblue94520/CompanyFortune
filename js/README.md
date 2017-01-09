@@ -9,11 +9,12 @@
 * JsThread.js
 
     為了能在處理大量運算時，CSS動畫不會停頓，而將Worker打包起來，易於使用。
-    
-    	new JsThread({
+    ```js
+    	new JsThread({
 		arguments:傳入參數,
 		run:要執行的方法 run function,
-		callback:返回});
-	
+		callback:返回
+	});
+```
 * component/*.js
 	
