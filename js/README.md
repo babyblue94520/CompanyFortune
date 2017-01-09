@@ -30,11 +30,15 @@
     
 	```js
     	var storeService = new StoreService();
+	
 	var input = document.getElementById('input');
+	
     	var content = document.getElementById('content');
+	
     	input.onkeyup = function(){
 		storeService.set('input',this.value);
     	};
+	
     	storeService.bind('input',function(store){
 		content.innerHTML = store.data;
     	});
