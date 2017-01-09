@@ -23,6 +23,6 @@
 		callback:function(){返回...}
 	});
 	```
-	
-* component/*.js
+
+
 	
