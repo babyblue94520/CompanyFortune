@@ -14,5 +14,5 @@
 		arguments:傳入參數,
 		run:要執行的方法 run function,
 		callback:返回
-   	 });
+   	});
     
