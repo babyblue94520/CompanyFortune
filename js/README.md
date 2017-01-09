@@ -23,6 +23,18 @@
 		callback:function(){返回...}
 	});
 	```
+* services/StoreService.js
 
-
-	
+    因為SPA架構下，為了能實現資料更新後，同步更新所有View，看過redux的概念，但是又無法將整個開發環境帶進團隊，只好自己設計類似的架構。
+    
+    ```js
+    var storeService = new StoreService();
+    var input = document.getElementById('input');
+    var content = document.getElementById('content');
+    input.onchange = function(){
+    	storeService.set('input',this.value);
+    };
+    storeService.bind('input',function(store){
+    	content.innerHTML = store.data;
+    });
+    ```
