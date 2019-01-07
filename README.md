@@ -1,6 +1,6 @@
-# CompanyFortune
+# CompanyFortune [新 your-name](https://github.com/babyblue94520/your-name)
 ## 算命
-### 網址：http://babyblue94520.github.io/CompanyFortune
+### 網址：https://babyblue94520.github.io/your-name/dist/
 #### 前言
 
     因為要成公司，需要算一個運勢不錯的公司名稱，透過算命師得到名稱組合的公式，如果靠人工的方式很難找到一個運勢好又喜歡的名稱，於是開發這個系統來幫助自己算公司名稱~~
